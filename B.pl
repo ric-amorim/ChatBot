@@ -4,24 +4,21 @@ arrayToString(X,R) :- atomic_list_concat(X," ",R).  % convert array to String
 
 readInput(I,R) :- read(I), stringToArray(I,R).      % Read input from user
 
-cycle :-  readInput(I,List),                      % Main cicle
-          I \= "Adeus",
-          pattern(List,R1),
-          arrayToString(R1,R),
-          write(R),
-          nl,
-          cycle. 
+changeString([],[]):- write("não percebi").
+changeString(L,R):- pattern(L,R).
+changeString([_|L],R):-changeString(L,R).
 
+cadeiras([["algoritmos"],["programação","em","lógica"],
+             ["inteligência","artificial"],["sistemas","operativos"]]).
 
-pattern(["nota",_|C],["tive",N,"e","tu?"]) :- nota(C,N).
-pattern(["tive",N],R) :- quali(N,R).
+pattern(["nota",_,_|C],["tive",N,"e","tu?"]) :- nota(C,N).
+pattern(["tive",N],R) :-quali(N,R).
 pattern(["fizeste",_,T,_|C],R) :- trabalho(T,C,R).
+pattern(["cadeira"|C],R) :- cadeiras(Y),existe(C,Y,R).
 
-
-cadeira(["algoritmos"|_],["Sim"],["Não"],["Sim"],["Não"]).
-cadeira(["programação","em","lógica"|_],["Ainda","Não"],["Não"],["Estou","a","fazer","agora"],["Sim"]).
-cadeira(["inteligência","artificial"|_],["Sim"],["Sim"],["Não"],["Não"]).
-cadeira(["sistemas","operativos"|_],["Sim"],["Não"],["Sim"],["Ainda","Não"]).
+existe(C,[Y|_],["Sim"]):- C==Y.
+existe(_,[],["Não"]).
+existe(C,[_|L],R):- existe(C,L,R).
 
 nota(["algoritmos"|_],"15").
 nota(["programação","em","lógica"|_],"20").
@@ -29,18 +26,27 @@ nota(["inteligência","artificial"|_],"18").
 nota(["sistemas","operativos"|_],"17").
 
 trabalho("trabalho",C,R) :- cadeira(C,R,_,_,_).
-trabalho("TPC",C,R):- cadeira(C,_,R,_,_,_).
+trabalho("TPC",C,R):- cadeira(C,_,R,_,_).
 trabalho("apresentação",C,R):- cadeira(C,_,_,R,_).
-trabalho("Quiz",C,R):- cadeira(C,_,_,_,R,_).
+trabalho("Quiz",C,R):- cadeira(C,_,_,_,R).
+
+tarefas(["algoritmos"|_],["Sim"],["Não"],["Sim"],["Não"]).
+tarefas(["programação","em","lógica"|_],["Ainda","Não"],["Não"],["Estou","a","fazer","agora"],["Sim"]).
+tarefas(["inteligência","artificial"|_],["Sim"],["Sim"],["Não"],["Não"]).
+tarefas(["sistemas","operativos"|_],["Sim"],["Não"],["Sim"],["Ainda","Não"]).
 
 quali(N,["Para","a","próxima","tiras","melhor"]):- atom_number(N,R), R < 10.
 quali(N,["Que","bomm!!"]):- atom_number(N,R), R < 16.
-quali(_,["WOWW","parabéns!!"]).
+quali(N,["WOWW","parabéns!!"]):- atom_number(N,_).
 
 
-%changeString([],[]).
-%changeString([X|L1],[Y|L2]):- change(X,Y),!, changeString(L1,L2).
-
-
+cycle :-  readInput(I,List),                      % Main cicle
+          I \= "Adeus",
+          changeString(List,R1),
+          arrayToString(R1,R),
+          write(R),
+          nl,
+          cycle. 
+cycle :- write("Adeus!").
 
 

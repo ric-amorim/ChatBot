@@ -14,6 +14,7 @@ cycle :-  readInput(I,List),                      % Main cicle
 
 
 pattern(["nota",_|C],["tive",N,"e","tu?"]) :- nota(C,N).
+pattern(["tive",N],R) :- quali(N,R).
 pattern(["fizeste",_,T,_|C],R) :- trabalho(T,C,R).
 
 
@@ -32,9 +33,13 @@ trabalho("TPC",C,R):- cadeira(C,_,R,_,_,_).
 trabalho("apresentação",C,R):- cadeira(C,_,_,R,_).
 trabalho("Quiz",C,R):- cadeira(C,_,_,_,R,_).
 
+quali(N,["Para","a","próxima","tiras","melhor"]):- atom_number(N,R), R < 10.
+quali(N,["Que","bomm!!"]):- atom_number(N,R), R < 16.
+quali(_,["WOWW","parabéns!!"]).
 
-changeString([],[]).
-changeString([X|L1],[Y|L2]):- change(X,Y),!, changeString(L1,L2).
+
+%changeString([],[]).
+%changeString([X|L1],[Y|L2]):- change(X,Y),!, changeString(L1,L2).
 
 
 
